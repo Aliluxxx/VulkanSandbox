@@ -39,3 +39,10 @@
 
 # debug information files
 *.dwo
+
+# Pycache
+**/__pycache__/**
+
+# Build
+build/**
+!build/.empty
