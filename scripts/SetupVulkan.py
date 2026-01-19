@@ -51,7 +51,10 @@ class VulkanConfiguration:
 	def __InstallVulkanSDK(cls):
 		permissionGranted = False
 		while not permissionGranted:
-			reply = str(input("Would you like to install VulkanSDK {0:s}? [Y/N]: ".format(cls.installVulkanVersion))).lower().strip()[:1]
+			if platform.system() == "Linux":
+				reply = str(input("Would you like to install VulkanSDK? [Y/N]: "))
+			else:
+				reply = str(input("Would you like to install VulkanSDK {0:s}? [Y/N]: ".format(cls.installVulkanVersion))).lower().strip()[:1]
 			if reply == 'n' or reply == 'N':
 				return
 			permissionGranted = (reply == 'y' or reply == 'Y')
@@ -90,9 +93,12 @@ class VulkanConfiguration:
 			import distro # type: ignore
 			if distro.id() in ("ubuntu", "debian", "raspbian", "raspios"):
 				print("Running apt to install Vulkan SDK...")
+				if arch in ("aarch64", "arm64", "armv7l", "armv6l"):
+					packages = ["mesa-vulkan-drivers", "vulkan-tools", "libvulkan-dev"]
+				elif arch in ("x86_64", "x86"):
+					packages = ["vulkan-utils", "vulkan-validationlayers", "libvulkan-dev"]
 				subprocess.run(["sudo", "apt", "update"], check=True)
-				subprocess.run(["sudo", "apt", "install", "-y",
-										"vulkan-utils", "libvulkan-dev", "vulkan-validationlayers"], check=True)
+				subprocess.run(["sudo", "apt", "install", "-y"] + packages, check=True)
 			elif distro.id() in ("fedora", "centos", "rhel"):
 				print("Running dnf to install Vulkan SDK...")
 				subprocess.run(["sudo", "dnf", "install", "-y",
