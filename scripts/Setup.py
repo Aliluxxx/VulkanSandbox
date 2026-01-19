@@ -11,7 +11,7 @@ try:
 	from SetupVulkan import VulkanConfiguration as VulkanRequirements
 	os.chdir('./../') # Change from scripts directory to root
 
-	print("Checking CMake...")
+	print("\nChecking CMake...")
 	if (not CMakeRequirements.Validate()):
 		raise Exception("CMakeException")
 	print("\nChecking Vulkan SDK...")
