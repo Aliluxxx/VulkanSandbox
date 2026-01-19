@@ -1,4 +1,5 @@
 import subprocess
+import platform
 import sys
 import importlib.util as importlib_util
 
@@ -8,9 +9,16 @@ class PythonConfiguration:
 		if not cls.__ValidatePython():
 			return False # Cannot validate further
 
+		# General packages
 		for packageName in ["requests"]:
 			if not cls.__ValidatePackage(packageName):
 				return False # Cannot validate further
+
+		# Linux specific packages
+		if platform.system() == "Linux":
+			for packageName in ["distro"]:
+				if not cls.__ValidatePackage(packageName):
+					return False # Cannot validate further
 
 		return True
 

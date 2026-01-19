@@ -1,4 +1,5 @@
 import os
+import platform
 import subprocess
 from pathlib import Path
 
@@ -32,7 +33,7 @@ class VulkanConfiguration:
 		else:
 			print(f"Located Vulkan SDK at {vulkanSDK}")
 
-		if (cls.requiredVulkanVersion not in vulkanSDK):
+		if (platform.system() != "Linux" and cls.requiredVulkanVersion not in vulkanSDK):
 			print(f"You don't have the correct Vulkan SDK version! (Required: {cls.requiredVulkanVersion}*)")
 			cls.__InstallVulkanSDK()
 			return False
@@ -69,11 +70,7 @@ class VulkanConfiguration:
 				vulkanPath = os.path.join(vulkanDir, f"vulkansdk-{version}-arm64.exe")
 		# Linux
 		elif system == "Linux":
-			if arch == "x86_64":
-				vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{version}/linux/vulkansdk-linux-x86_64-{version}.tar.xz"
-				vulkanPath = os.path.join(vulkanDir, f"vulkansdk-{version}-x86_64.tar.xz")
-			if arch == "aarch64":
-				pass
+			pass
 		# MacOSX
 		elif system == "MacOSX":
 			vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{version}/mac/vulkansdk-macos-{version}.zip"
@@ -87,13 +84,23 @@ class VulkanConfiguration:
 		if system == "Windows":
 			print("Running Vulkan SDK installer...")
 			os.startfile(os.path.abspath(vulkanPath))
-		if system == "Linux": # Linux: tar -xzf {vulkanPath} -C {vulkanDir}
-			print("Unzipping Vulkan SDK installer...")
-			Utils.UnzipFile(vulkanPath)
-			vulkanInstaller = os.path.join(vulkanDir, "{version}/setup-env.sh")
-			print("Running Vulkan SDK installer...")
-			subprocess.run(["chmod", "+x", vulkanInstaller])
-			subprocess.run([f"./{vulkanInstaller}"])
+		if system == "Linux":
+			import distro # type: ignore
+			if distro.id() in ("ubuntu", "debian", "raspbian", "raspios"):
+				print("Running apt to install Vulkan SDK...")
+				subprocess.run(["sudo", "apt", "update"], check=True)
+				subprocess.run(["sudo", "apt", "install", "-y",
+										"vulkan-utils", "libvulkan-dev", "vulkan-validationlayers"], check=True)
+			elif distro.id() in ("fedora", "centos", "rhel"):
+				print("Running dnf to install Vulkan SDK...")
+				subprocess.run(["sudo", "dnf", "install", "-y",
+											"vulkan-tools", "vulkan-loader-devel", "vulkan-validation-layers"], check=True)
+			elif distro.id() in ("arch", "manjaro"):
+				print("Running pacman to install Vulkan SDK...")
+				subprocess.run(["sudo", "pacman", "-Sy", "--noconfirm",
+												"vulkan-icd-loader", "vulkan-tools", "vulkan-validation-layers"], check=True)
+			else:
+				print(f"{distro.name()} is not supported for automatic installation")
 		elif system == "MacOSX":
 			print("Unzipping Vulkan SDK installer...")
 			Utils.UnzipFile(vulkanPath)

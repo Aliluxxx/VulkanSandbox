@@ -55,12 +55,7 @@ class CMakeConfiguration:
 				cmakePath = os.path.join(cmakeDir, f"cmake-{version}-arm64-installer.exe")
 		# Linux
 		elif system == "Linux":
-			if arch == "x86_64":
-				cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-linux-x86_64.sh"
-				cmakePath = os.path.join(cmakeDir, f"cmake-{version}-x86_64-installer.sh")
-			if arch == "aarch64":
-				cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-linux-aarch64.sh"
-				cmakePath = os.path.join(cmakeDir, f"cmake-{version}-aarch64-installer.sh")
+			pass
 		# MacOSX
 		elif system == "MacOSX":
 			cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-macos10.10-universal.dmg"
@@ -74,7 +69,21 @@ class CMakeConfiguration:
 		if system == "Windows":
 			print("Running CMake installer...")
 			os.startfile(os.path.abspath(cmakePath))
-		elif system == "Linux" or system == "MacOSX":
+		elif system == "Linux":
+			import distro # type: ignore
+			if distro.id() in ("ubuntu", "debian", "raspbian", "raspios"):
+				print("Running apt to install CMake...")
+				subprocess.run(["sudo", "apt", "update"], check=True)
+				subprocess.run(["sudo", "apt", "install", "-y", "cmake"], check=True)
+			elif distro.id() in ("fedora", "centos", "rhel"):
+				print("Running dnf to install CMake...")
+				subprocess.run(["sudo", "dnf", "install", "-y", "cmake"], check=True)
+			elif distro.id() in ("arch", "manjaro"):
+				print("Running pacman to install CMake...")
+				subprocess.run(["sudo", "pacman", "-Sy", "--noconfirm", "cmake"], check=True)
+			else:
+				print(f"{distro.name()} is not supported for automatic installation")
+		elif system == "MacOSX":
 			print("Running CMake installer...")
 			subprocess.run(["chmod", "+x", cmakePath])
 			subprocess.run([f"./{cmakePath}"])
