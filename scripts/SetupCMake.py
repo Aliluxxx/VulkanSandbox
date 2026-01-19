@@ -1,4 +1,5 @@
 import os
+import platform
 import subprocess
 
 import Utils
@@ -33,7 +34,10 @@ class CMakeConfiguration:
 	def __InstallCMake(cls):
 		permissionGranted = False
 		while not permissionGranted:
-			reply = str(input("Would you like to install CMake {0:s}? [Y/N]: ".format(cls.installCMakeVersion))).lower().strip()[:1]
+			if platform.system() == "Linux":
+				reply = str(input("Would you like to install CMake? [Y/N]: "))
+			else:
+				reply = str(input("Would you like to install CMake {0:s}? [Y/N]: ".format(cls.installCMakeVersion))).lower().strip()[:1]
 			if reply == 'n' or reply == 'N':
 				return
 			permissionGranted = (reply == 'y' or reply == 'Y')
@@ -64,8 +68,10 @@ class CMakeConfiguration:
 			print(f"{system}-{arch} not supported for automatic installation")
 			return
 
-		print("Downloading {0:s} to {1:s}".format(cmakeInstallURL, cmakePath))
-		Utils.DownloadFile(cmakeInstallURL, cmakePath)
+		if system != "Linux":
+			print("Downloading {0:s} to {1:s}".format(cmakeInstallURL, cmakePath))
+			Utils.DownloadFile(cmakeInstallURL, cmakePath)
+
 		if system == "Windows":
 			print("Running CMake installer...")
 			os.startfile(os.path.abspath(cmakePath))
@@ -91,3 +97,4 @@ class CMakeConfiguration:
 			print("Cannot execute the installation automatically")
 			print(f"Execute the installation manually (installer is located at \"{os.path.abspath(cmakeDir)}\")")
 		print("Re-run this script after installation!")
+		quit()

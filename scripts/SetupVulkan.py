@@ -79,8 +79,10 @@ class VulkanConfiguration:
 			print(f"{system}-{arch} not supported for automatic installation")
 			return
 
-		print("Downloading {0:s} to {1:s}".format(vulkanInstallURL, vulkanPath))
-		Utils.DownloadFile(vulkanInstallURL, vulkanPath)
+		if system != "Linux":
+			print("Downloading {0:s} to {1:s}".format(vulkanInstallURL, vulkanPath))
+			Utils.DownloadFile(vulkanInstallURL, vulkanPath)
+
 		if system == "Windows":
 			print("Running Vulkan SDK installer...")
 			os.startfile(os.path.abspath(vulkanPath))
