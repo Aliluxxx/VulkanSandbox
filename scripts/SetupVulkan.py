@@ -16,7 +16,7 @@ class VulkanConfiguration:
 			print("Vulkan SDK not installed correctly.")
 			return False
 
-		if (not cls.CheckVulkanSDKDebugLibs()):
+		if (platform.system() == "Windows" and not cls.CheckVulkanSDKDebugLibs()):
 			print("No Vulkan SDK debug libs found. Install Vulkan SDK with debug libs.")
 			print("Debug configuration disabled.")
 			return False
@@ -25,21 +25,35 @@ class VulkanConfiguration:
 
 	@classmethod
 	def CheckVulkanSDK(cls):
-		vulkanSDK = os.environ.get("VULKAN_SDK")
-		if (vulkanSDK is None):
-			print("You don't have the Vulkan SDK installed!")
-			cls.__InstallVulkanSDK()
-			return None
+		if platform.system() == "Windows":
+			vulkanSDK = os.environ.get("VULKAN_SDK")
+			if (vulkanSDK is None):
+				print("You don't have the Vulkan SDK installed!")
+				cls.__InstallVulkanSDK()
+				return None
+			else:
+				print(f"Located Vulkan SDK at {vulkanSDK}")
+
+			if (cls.requiredVulkanVersion not in vulkanSDK):
+				print(f"You don't have the correct Vulkan SDK version! (Required: {cls.requiredVulkanVersion}*)")
+				cls.__InstallVulkanSDK()
+				return False
+
+			print(f"Correct Vulkan SDK located at {vulkanSDK}")
+			return True
 		else:
-			print(f"Located Vulkan SDK at {vulkanSDK}")
-
-		if (platform.system() != "Linux" and cls.requiredVulkanVersion not in vulkanSDK):
-			print(f"You don't have the correct Vulkan SDK version! (Required: {cls.requiredVulkanVersion}*)")
-			cls.__InstallVulkanSDK()
-			return False
-
-		print(f"Correct Vulkan SDK located at {vulkanSDK}")
-		return True
+			try:
+				output = subprocess.run(["vulkaninfo"], capture_output=True, text=True, check=True)
+				for line in output.stdout.splitlines():
+					if "apiVersion" in line:
+						print(f"Located Vulkan SDK {(' '.join(line.split())).split(" ")[2]}")
+				return True
+			except FileNotFoundError:
+				print("Vulkan tools not found")
+				return False
+			except subprocess.CalledProcessError:
+				print("VulkanSDK found, but may be corrupted")
+				return False
 
 	@classmethod
 	def CheckVulkanSDKDebugLibs(cls):
