@@ -1,5 +1,5 @@
 import os
-import platform
+import subprocess
 from pathlib import Path
 
 import Utils
@@ -55,21 +55,31 @@ class VulkanConfiguration:
 				return
 			permissionGranted = (reply == 'y' or reply == 'Y')
 
-		system = platform.system()
+		(system, arch) = Utils.GetPlatform()
 		vulkanDir = cls.vulkanDirectory
 		version = cls.installVulkanVersion
 
+		# Windows
 		if system == "Windows":
-			vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{version}/windows/vulkansdk-windows-X64-{version}.exe"
-			vulkanPath = os.path.join(vulkanDir, f"vulkansdk-{version}-X64.exe")
+			if arch == "x86_64":
+				vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{version}/windows/vulkansdk-windows-X64-{version}.exe"
+				vulkanPath = os.path.join(vulkanDir, f"vulkansdk-{version}-x86_64-installer.exe")
+			if arch == "arm64":
+				vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{version}/windows/vulkansdk-windows-ARM64-{version}.exe"
+				vulkanPath = os.path.join(vulkanDir, f"vulkansdk-{version}-arm64.exe")
+		# Linux
 		elif system == "Linux":
-			vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{version}/linux/vulkansdk-linux-x86_64-{version}.tar.xz"
-			vulkanPath = os.path.join(vulkanDir, f"vulkansdk-{version}-x86_64.tar.xz")
-		elif system == "Darwin":
+			if arch == "x86_64":
+				vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{version}/linux/vulkansdk-linux-x86_64-{version}.tar.xz"
+				vulkanPath = os.path.join(vulkanDir, f"vulkansdk-{version}-x86_64.tar.xz")
+			if arch == "aarch64":
+				pass
+		# MacOSX
+		elif system == "MacOSX":
 			vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{version}/mac/vulkansdk-macos-{version}.zip"
-			vulkanPath = os.path.join(vulkanDir, f"vulkansdk-{version}.zip")
+			vulkanPath = os.path.join(vulkanDir, f"vulkansdk-{version}-universal.zip")
 		else:
-			print(f"{system} not supported for automatic installation")
+			print(f"{system}-{arch} not supported for automatic installation")
 			return
 
 		print("Downloading {0:s} to {1:s}".format(vulkanInstallURL, vulkanPath))
@@ -77,8 +87,23 @@ class VulkanConfiguration:
 		if system == "Windows":
 			print("Running Vulkan SDK installer...")
 			os.startfile(os.path.abspath(vulkanPath))
+		if system == "Linux": # Linux: tar -xzf {vulkanPath} -C {vulkanDir}
+			print("Unzipping Vulkan SDK installer...")
+			Utils.UnzipFile(vulkanPath)
+			vulkanInstaller = os.path.join(vulkanDir, "{version}/setup-env.sh")
+			print("Running Vulkan SDK installer...")
+			subprocess.run(["chmod", "+x", vulkanInstaller])
+			subprocess.run([f"./{vulkanInstaller}"])
+		elif system == "MacOSX":
+			print("Unzipping Vulkan SDK installer...")
+			Utils.UnzipFile(vulkanPath)
+			vulkanInstaller = os.path.join(vulkanDir, f"vulkansdk-macOS-{version}.app/Contents/MacOS/vulkansdk-macOS-{version}")
+			print("Running Vulkan SDK installer...")
+			subprocess.run(["chmod", "+x", vulkanInstaller])
+			subprocess.run([f"./{vulkanInstaller}"])
 		else:
-			print(f"Extract the archive manually") # Linux: tar -xzf {vulkanPath} -C {vulkanDir}
+			print("Cannot execute the installation automatically")
+			print(f"Execute the installation manually (installer is located at \"{os.path.abspath(vulkanDir)}\")")
 		print("Re-run this script after installation!")
 		quit()
 

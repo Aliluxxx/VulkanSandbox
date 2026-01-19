@@ -1,5 +1,4 @@
 import os
-import platform
 import subprocess
 
 import Utils
@@ -39,28 +38,47 @@ class CMakeConfiguration:
 				return
 			permissionGranted = (reply == 'y' or reply == 'Y')
 
-		system = platform.system()
+		(system, arch) = Utils.GetPlatform()
 		cmakeDir = cls.cmakeDirectory
 		version = cls.installCMakeVersion
 
+		# Windows
 		if system == "Windows":
-			cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-windows-x86_64.msi"
-			cmakePath = os.path.join(cmakeDir, f"vulkansdk-{version}-Installer.exe")
+			if arch == "x86_64":
+				cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-windows-x86_64.msi"
+				cmakePath = os.path.join(cmakeDir, f"cmake-{version}-x86_64-installer.exe")
+			if arch == "x86":
+				cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-windows-i386.msi"
+				cmakePath = os.path.join(cmakeDir, f"cmake-{version}-x86-installer.exe")
+			if arch == "arm64":
+				cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-windows-arm64.msi"
+				cmakePath = os.path.join(cmakeDir, f"cmake-{version}-arm64-installer.exe")
+		# Linux
 		elif system == "Linux":
-			cmakeInstallURL = f"hhttps://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-linux-x86_64.sh"
-			cmakePath = os.path.join(cmakeDir, f"vulkansdk-{version}-x86_64.tar.xz")
-		elif system == "Darwin":
-			cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-macos-universal.dmg"
-			cmakePath = os.path.join(cmakeDir, f"vulkansdk-{version}-macos.zip")
+			if arch == "x86_64":
+				cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-linux-x86_64.sh"
+				cmakePath = os.path.join(cmakeDir, f"cmake-{version}-x86_64-installer.sh")
+			if arch == "aarch64":
+				cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-linux-aarch64.sh"
+				cmakePath = os.path.join(cmakeDir, f"cmake-{version}-aarch64-installer.sh")
+		# MacOSX
+		elif system == "MacOSX":
+			cmakeInstallURL = f"https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}-macos10.10-universal.dmg"
+			cmakePath = os.path.join(cmakeDir, f"cmake-{version}-universal-installer.dmg")
 		else:
-			print(f"{system} not supported for automatic installation")
+			print(f"{system}-{arch} not supported for automatic installation")
 			return
 
 		print("Downloading {0:s} to {1:s}".format(cmakeInstallURL, cmakePath))
 		Utils.DownloadFile(cmakeInstallURL, cmakePath)
 		if system == "Windows":
-			print("Running Vulkan SDK installer...")
+			print("Running CMake installer...")
 			os.startfile(os.path.abspath(cmakePath))
+		elif system == "Linux" or system == "MacOSX":
+			print("Running CMake installer...")
+			subprocess.run(["chmod", "+x", cmakePath])
+			subprocess.run([f"./{cmakePath}"])
 		else:
-			print(f"Extract the archive manually")
+			print("Cannot execute the installation automatically")
+			print(f"Execute the installation manually (installer is located at \"{os.path.abspath(cmakeDir)}\")")
 		print("Re-run this script after installation!")
