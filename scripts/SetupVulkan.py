@@ -30,23 +30,35 @@ class VulkanConfiguration:
 			if (vulkanSDK is None):
 				print("You don't have the Vulkan SDK installed!")
 				cls.__InstallVulkanSDK()
-				return None
-			else:
-				print(f"Located Vulkan SDK at {vulkanSDK}")
-
-			if (cls.requiredVulkanVersion not in vulkanSDK):
-				print(f"You don't have the correct Vulkan SDK version! (Required: {cls.requiredVulkanVersion}*)")
-				cls.__InstallVulkanSDK()
 				return False
+			else:
+				if (cls.requiredVulkanVersion not in vulkanSDK):
+					print(f"Located Vulkan SDK at {vulkanSDK}")
+					print(f"You don't have the correct Vulkan SDK version! (Required: {cls.requiredVulkanVersion}*)")
+					cls.__InstallVulkanSDK()
+					return False
 
 			print(f"Correct Vulkan SDK located at {vulkanSDK}")
 			return True
 		else:
 			try:
 				output = subprocess.run(["vulkaninfo"], capture_output=True, text=True, check=True)
+				majApiVersion = "0.0.0.0"
 				for line in output.stdout.splitlines():
 					if "apiVersion" in line:
-						print(f"Located Vulkan SDK {(' '.join(line.split())).split(" ")[2]}")
+						apiVersion = (' '.join(line.split())).split(" ")[2]
+						currentVersion = tuple(map(int, apiVersion.split(".")))
+						majVersion = tuple(map(int, majApiVersion.split(".")))
+						if currentVersion > majVersion:
+							majApiVersion = apiVersion
+						print(f"- Found VulkanSDK {apiVersion}")
+
+				if (cls.requiredVulkanVersion not in majApiVersion):
+					print(f"You don't have a compatible Vulkan SDK version! (Required: {cls.requiredVulkanVersion}*)")
+					cls.__InstallVulkanSDK()
+					return False
+
+				print(f"Compatible Vulkan SDK version: {majApiVersion}")
 				return True
 			except FileNotFoundError:
 				print("Vulkan tools not found")
