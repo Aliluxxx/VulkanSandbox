@@ -46,3 +46,6 @@
 # Build
 build/**
 !build/.empty
+
+# Vendor
+vendor/**
