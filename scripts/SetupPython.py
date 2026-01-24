@@ -10,7 +10,7 @@ class PythonConfiguration:
 			return False # Cannot validate further
 
 		# General packages
-		for packageName in ["requests"]:
+		for packageName in ["requests", "inquirer"]:
 			if not cls.__ValidatePackage(packageName):
 				return False # Cannot validate further
 
@@ -45,13 +45,13 @@ class PythonConfiguration:
 	def __InstallPackage(cls, packageName):
 		permissionGranted = False
 		while not permissionGranted:
-			reply = str(input("Would you like to install Python package '{0:s}'? [Y/N]: ".format(packageName))).lower().strip()[:1]
+			reply = str(input("Would you like to install Python package '{0:s}'? [Y/N]: ".format(packageName.replace("_", "-")))).lower().strip()[:1]
 			if reply == 'n' or reply == 'N':
 				return False
 			permissionGranted = (reply == 'y' or reply == 'Y')
 		
-		print(f"Installing {packageName} module...")
-		subprocess.check_call(['python', '-m', 'pip', 'install', packageName])
+		print(f"Installing {packageName.replace("_", "-")} module...")
+		subprocess.check_call(['python', '-m', 'pip', 'install', packageName.replace("_", "-")])
 
 		return cls.__ValidatePackage(packageName)
 
