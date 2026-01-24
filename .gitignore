@@ -45,7 +45,13 @@
 
 # Build
 build/**
-!build/.empty
 
 # Vendor
 vendor/**
+
+# Scripts
+**.bat
+**.sh
+
+# Link
+**.lnk
