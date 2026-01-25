@@ -5,6 +5,8 @@
 #endif
 
 #include "Core/Base/Base.h"
+#include "Core/Renderer/VulkanInstance.h"
+#include "Core/Renderer/VulkanDebugger.h"
 
 namespace sb {
 
@@ -34,5 +36,7 @@ namespace sb {
 	private:
 
 		ContextSpecification m_Specification;
+		VulkanInstance m_Instance;
+		VulkanDebugger m_Debugger;
 	};
 }
