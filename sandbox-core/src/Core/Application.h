@@ -1,1 +1,1 @@
-void Print();
+void Test();

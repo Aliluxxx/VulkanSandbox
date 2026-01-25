@@ -2,7 +2,7 @@
 
 int main() {
 
-	Print();
+	Test();
 
 	return 0;
 }
