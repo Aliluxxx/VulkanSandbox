@@ -12,6 +12,7 @@ set(SANDBOX_LIB_DIRS
 # Submodule libraries
 list(APPEND SANDBOX_INCLUDE_DIRS
 	${CMAKE_SOURCE_DIR}/sandbox-core/libs/glfw/include
+	${CMAKE_SOURCE_DIR}/sandbox-core/libs/glm
 )
 list(APPEND SANDBOX_LIB_DIRS
 	glfw

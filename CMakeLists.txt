@@ -60,6 +60,10 @@ add_subdirectory("sandbox-core/libs/glfw")
 set_configurations_fn(glfw)
 set_output_dirs_fn(glfw "libs")
 
+# GLM
+add_subdirectory("sandbox-core/libs/glm")
+set_configurations_fn(glm)
+
 add_subdirectory("sandbox")
 add_subdirectory("sandbox-core")
 
