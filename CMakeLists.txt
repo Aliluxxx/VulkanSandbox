@@ -37,28 +37,7 @@ function(set_output_dirs_fn target)
 	)
 endfunction()
 
-find_package(Vulkan REQUIRED)
-message(STATUS "Vulkan include dirs: ${Vulkan_INCLUDE_DIRS}")
-message(STATUS "Vulkan libraries: ${Vulkan_LIBRARIES}")
-
-set(VULKAN_INCLUDE_DIR ${Vulkan_INCLUDE_DIRS})
-get_filename_component(VULKAN_LIB_DIR ${Vulkan_LIBRARIES} DIRECTORY)
-
-set(VULKAN_LIB_DIRS_DEBUG
-	"${VULKAN_LIB_DIR}/vulkan-1.lib"
-	"${VULKAN_LIB_DIR}/shaderc_sharedd.lib"
-	"${VULKAN_LIB_DIR}/spirv-cross-cored.lib"
-	"${VULKAN_LIB_DIR}/spirv-cross-glsld.lib"
-	"${VULKAN_LIB_DIR}/SPIRV-Toolsd.lib"
-)
-
-set(VULKAN_LIB_DIRS_RELEASE
-	"${VULKAN_LIB_DIR}/vulkan-1.lib"
-	"${VULKAN_LIB_DIR}/shaderc_shared.lib"
-	"${VULKAN_LIB_DIR}/spirv-cross-core.lib"
-	"${VULKAN_LIB_DIR}/spirv-cross-glsl.lib"
-	"${VULKAN_LIB_DIR}/SPIRV-Tools.lib"
-)
+include(scripts/dependencies.cmake)
 
 add_subdirectory("sandbox")
 add_subdirectory("sandbox-core")

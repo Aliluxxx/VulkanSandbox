@@ -13,14 +13,12 @@ target_sources("sandbox"
 
 target_include_directories("sandbox"
 	PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/src
-	${CMAKE_SOURCE_DIR}/sandbox-core/src
-	${VULKAN_INCLUDE_DIR}
+	${SANDBOX_INCLUDE_DIRS}
 )
 
 target_link_libraries("sandbox"
 	PRIVATE
-	"sandbox-core"
+	${SANDBOX_LIB_DIRS}
 	$<$<CONFIG:Debug>:${VULKAN_LIB_DIRS_DEBUG}>
 	$<$<CONFIG:Release>:${VULKAN_LIB_DIRS_RELEASE}>
 	$<$<CONFIG:Dist>:${VULKAN_LIB_DIRS_RELEASE}>

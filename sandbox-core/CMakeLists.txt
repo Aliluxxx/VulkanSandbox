@@ -13,8 +13,7 @@ target_sources("sandbox-core"
 
 target_include_directories("sandbox-core"
 	PRIVATE
-	${CMAKE_SOURCE_DIR}/sandbox-core/src
-	${VULKAN_INCLUDE_DIR}
+	${SANDBOX_INCLUDE_DIRS}
 )
 
 set_configurations_fn("sandbox-core")
