@@ -9,6 +9,14 @@ set(SANDBOX_LIB_DIRS
 	"sandbox-core"
 )
 
+# Submodule libraries
+list(APPEND SANDBOX_INCLUDE_DIRS
+	${CMAKE_SOURCE_DIR}/sandbox-core/libs/glfw/include
+)
+list(APPEND SANDBOX_LIB_DIRS
+	glfw
+)
+
 # Vulkan dependencies
 find_package(Vulkan REQUIRED)
 message(STATUS "Vulkan include dirs: ${Vulkan_INCLUDE_DIRS}")
