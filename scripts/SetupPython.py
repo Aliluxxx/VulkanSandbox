@@ -10,9 +10,15 @@ class PythonConfiguration:
 			return False # Cannot validate further
 
 		# General packages
-		for packageName in ["requests", "inquirer"]:
+		for packageName in ["requests"]:
 			if not cls.__ValidatePackage(packageName):
 				return False # Cannot validate further
+
+		# Windows specific packages
+		if platform.system() == "Windows":
+			for packageName in ["inquirer"]:
+				if not cls.__ValidatePackage(packageName):
+					return False # Cannot validate further
 
 		# Linux specific packages
 		if platform.system() == "Linux":

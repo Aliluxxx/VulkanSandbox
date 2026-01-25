@@ -8,15 +8,18 @@ platform = Utils.GetPlatform()
 if platform == "Unknown":
 	print("Platform not supported or unknown")
 else:
-	print(f"Detected platform: {platform[0]}-{platform[1]}\n")
+	(system, arch) = platform
+	print(f"Detected platform: {system}-{arch}\n")
 	try:
 		print("Checking Python...")
 		if (not PythonRequirements.Validate()):
 			raise Exception("PythonException")
 
-		import inquirer
+		if system == "Windows":
+			import inquirer
 		from SetupCMake import CMakeConfiguration as CMakeRequirements
 		from SetupVulkan import VulkanConfiguration as VulkanRequirements
+		from SetupWindow import WindowConfiguration as WindowRequirements
 		os.chdir('./../') # Change from scripts directory to root
 
 		print("\nChecking CMake...")
@@ -25,9 +28,11 @@ else:
 		print("\nChecking Vulkan SDK...")
 		if (not VulkanRequirements.Validate()):
 			raise Exception("VulkanException")
+		print("\nChecking Window libraries support...")
+		if (not WindowRequirements.Validate()):
+			raise Exception("WindowException")
 
 		print("\nRunning CMake...")
-		(system, arch) = Utils.GetPlatform()
 
 		if system == "Windows":
 			generators = [
@@ -51,26 +56,50 @@ else:
 				("CodeLite", "CodeLite - Unix Makefiles", "codelite")
 			]
 
-		choices = [label for label, _, _ in generators]
+		if system == "Windows":
 
-		question = [
-			inquirer.List(
-				"generator",
-				message="Choose a build system:",
-				choices=choices,
-				carousel=True
-			)
-		]
+			choices = [label for label, _, _ in generators]
 
-		answer = inquirer.prompt(question)
-		selected_label = answer["generator"]
+			question = [
+				inquirer.List(
+					"generator",
+					message="Choose a build system:",
+					choices=choices,
+					carousel=True
+				)
+			]
 
-		final_dir = ""
-		for label, generator, dir in generators:
-			if label == selected_label:
-				selected_generator = generator
-				final_dir = dir
-				break
+			answer = inquirer.prompt(question)
+			selected_label = answer["generator"]
+
+			final_dir = ""
+			for label, generator, dir in generators:
+				if label == selected_label:
+					selected_generator = generator
+					final_dir = dir
+					break
+
+		else:
+			print("\nChoose a build system:")
+			for idx, (label, _, _) in enumerate(generators, 1):
+				print(f"{idx}. {label}")
+
+			try:
+				choice = int(input("\nEnter the number of your choice: "))
+				if choice < 1 or choice > len(generators):
+					raise ValueError("Invalid choice")
+			except ValueError as e:
+				print(f"Error: {e}")
+				raise Exception("Invalid choice provided")
+
+			selected_label = generators[choice - 1][0]
+
+			final_dir = ""
+			for label, generator, dir in generators:
+				if label == selected_label:
+					selected_generator = generator
+					final_dir = dir
+					break
 
 		cmd = ["cmake", "-B", "build/" + final_dir, "-G", selected_generator]
 		subprocess.run(cmd, check=True)

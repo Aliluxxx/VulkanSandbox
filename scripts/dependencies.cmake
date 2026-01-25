@@ -25,7 +25,7 @@ message(STATUS "Vulkan libraries: ${Vulkan_LIBRARIES}")
 set(VULKAN_INCLUDE_DIR ${Vulkan_INCLUDE_DIRS})
 list(APPEND SANDBOX_INCLUDE_DIRS ${VULKAN_INCLUDE_DIR})
 get_filename_component(VULKAN_LIB_DIR ${Vulkan_LIBRARIES} DIRECTORY)
-list(APPEND SANDBOX_LIB_DIRS "${VULKAN_LIB_DIR}/vulkan-1.lib")
+list(APPEND SANDBOX_LIB_DIRS "${Vulkan_LIBRARIES}")
 
 set(VULKAN_LIB_DIRS_DEBUG
 	"${VULKAN_LIB_DIR}/shaderc_sharedd.lib"
@@ -35,7 +35,6 @@ set(VULKAN_LIB_DIRS_DEBUG
 )
 
 set(VULKAN_LIB_DIRS_RELEASE
-	"${VULKAN_LIB_DIR}/vulkan-1.lib"
 	"${VULKAN_LIB_DIR}/shaderc_shared.lib"
 	"${VULKAN_LIB_DIR}/spirv-cross-core.lib"
 	"${VULKAN_LIB_DIR}/spirv-cross-glsl.lib"
