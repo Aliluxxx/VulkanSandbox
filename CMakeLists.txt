@@ -18,14 +18,14 @@ set(OUTPUT_DIR "$<CONFIG>")
 function(set_configurations_fn target)
 	target_compile_options(${target} PRIVATE
 		# GCC / Clang
-		$<$<AND:$<CONFIG:Debug>,$<NOT:$<CXX_COMPILER_ID:MSVC>>>:-O0 -g -DDEBUG>
-		$<$<AND:$<CONFIG:Release>,$<NOT:$<CXX_COMPILER_ID:MSVC>>>:-O2 -g>
-		$<$<AND:$<CONFIG:Dist>,$<NOT:$<CXX_COMPILER_ID:MSVC>>>:-O3 -DNDEBUG>
+		$<$<AND:$<CONFIG:Debug>,$<NOT:$<CXX_COMPILER_ID:MSVC>>>:-O0 -g -DDEBUG -DSB_DEBUG>
+		$<$<AND:$<CONFIG:Release>,$<NOT:$<CXX_COMPILER_ID:MSVC>>>:-O2 -g -DSB_RELEASE>
+		$<$<AND:$<CONFIG:Dist>,$<NOT:$<CXX_COMPILER_ID:MSVC>>>:-O3 -DNDEBUG -DSB_DIST>
 
 		# MSVC
-		$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Od /Zi /DDEBUG>
-		$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2 /Zi>
-		$<$<AND:$<CONFIG:Dist>,$<CXX_COMPILER_ID:MSVC>>:/O2 /DNDEBUG>
+		$<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:MSVC>>:/Od /Zi /DDEBUG /DSB_DEBUG>
+		$<$<AND:$<CONFIG:Release>,$<CXX_COMPILER_ID:MSVC>>:/O2 /Zi /DSB_RELEASE>
+		$<$<AND:$<CONFIG:Dist>,$<CXX_COMPILER_ID:MSVC>>:/O2 /DNDEBUG /DSB_DIST>
 	)
 
 	target_link_options(${target} PRIVATE
