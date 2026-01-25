@@ -1,10 +1,10 @@
-#include <iostream>
-
 #include <GLFW/glfw3.h>
 
 void Test() {
 
-	std::cout << "Hello Vulkan\n";
+	sb::Log::Init();
+
+	SB_INFO("Hello Vulkan");
 
 	glfwInit();
 
