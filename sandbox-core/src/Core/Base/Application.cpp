@@ -22,9 +22,12 @@ namespace sb {
 		cSpec.WindowPtr = m_Window->GetNativeWindow();
 		cSpec.AppName = m_Window->GetTitle();
 		cSpec.EngineName = "Vulkan Core";
+#ifndef SB_DIST
 		cSpec.EnableDebug = true;
+#endif
 		Ref<Context> context = Context::Create(cSpec);
 		m_Window->SetContext(context);
+		m_Window->GetContext()->Init();
 
 		Renderer::Init(context);
 	}
@@ -32,6 +35,7 @@ namespace sb {
 	Application::~Application() {
 
 		m_LayerStack.Clear();
+		m_Window->GetContext()->Destroy();
 		Renderer::Shutdown();
 	}
 

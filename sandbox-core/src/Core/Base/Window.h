@@ -67,6 +67,7 @@ namespace sb {
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetContext(Ref<Context> context) = 0;
+		virtual Ref<Context> GetContext() = 0;
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 		virtual void SetMouseCursorVisible(bool visible) = 0;

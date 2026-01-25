@@ -33,6 +33,7 @@ namespace sb {
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) override;
 		virtual void SetContext(Ref<Context> context) override;
+		virtual Ref<Context> GetContext() override;
 		virtual void SetVSync(bool enabled) override;
 		virtual bool IsVSync() const override;
 		virtual void SetMouseCursorVisible(bool visible) override;

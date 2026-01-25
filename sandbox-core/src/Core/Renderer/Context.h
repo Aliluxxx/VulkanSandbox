@@ -20,6 +20,10 @@ namespace sb {
 
 	public:
 
+		Context(const ContextSpecification& spec);
+
+		void Init();
+		void Destroy();
 		void BeginFrame();
 		void EndFrame();
 

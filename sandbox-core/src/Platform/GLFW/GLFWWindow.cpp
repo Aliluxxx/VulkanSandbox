@@ -182,6 +182,11 @@ namespace sb {
 		m_Data.Context = context;
 	}
 
+	Ref<Context> GLFWWindow::GetContext() {
+
+		return m_Data.Context;
+	}
+
 	void GLFWWindow::SetVSync(bool enabled) {
 
 		m_Data.VSync = enabled;
