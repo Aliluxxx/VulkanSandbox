@@ -38,6 +38,6 @@
 #include <cmath>
 #include <inttypes.h>
 
-#include "Core/Log.h"
+#include "Core/Base/Log.h"
 
 #endif

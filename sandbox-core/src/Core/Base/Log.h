@@ -3,6 +3,7 @@
 #define FMT_UNICODE 0
 #undef SPDLOG_ACTIFM_LEFML
 #define SPDLOG_ACTIFM_LEFML SPDLOG_LEFML_TRACE
+#define SPDLOG_ACTIVE_LEVEL 0
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
 

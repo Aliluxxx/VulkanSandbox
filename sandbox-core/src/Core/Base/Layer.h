@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Core/Base.h"
-#include "Core/Time.h"
+#include "Core/Base/Base.h"
+#include "Core/Base/Time.h"
+#include "Core/Events/Event.h"
 
 namespace sb {
 
@@ -15,6 +16,8 @@ namespace sb {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(Time ts) {}
+		virtual void OnImGuiRender() {}
+		virtual void OnEvent(Event& event) {}
 
 #ifndef SB_DIST
 		inline const std::string& GetName() const {

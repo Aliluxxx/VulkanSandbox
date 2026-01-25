@@ -4,8 +4,8 @@
 #include <chrono>
 #endif
 
-#include "Core/Base.h"
-#include "Core/Time.h"
+#include "Core/Base/Base.h"
+#include "Core/Base/Time.h"
 
 namespace sb {
 

@@ -4,8 +4,8 @@
 #include <vector>
 #endif
 
-#include "Core/Base.h"
-#include "Core/Layer.h"
+#include "Core/Base/Base.h"
+#include "Core/Base/Layer.h"
 
 namespace sb {
 
