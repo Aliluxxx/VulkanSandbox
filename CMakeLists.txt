@@ -15,6 +15,16 @@ set(CMAKE_STATIC_LINKER_FLAGS_DIST "" CACHE STRING "" FORCE)
 
 set(OUTPUT_DIR "$<CONFIG>")
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    add_definitions(-DSB_PLATFORM_LINUX)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    add_definitions(-DSB_PLATFORM_MACOSX)
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    add_definitions(-DSB_PLATFORM_WINDOWS)
+else()
+    message(WARNING "OS not recognized!")
+endif()
+
 function(set_configurations_fn target)
 	target_compile_options(${target} PRIVATE
 		# GCC / Clang
