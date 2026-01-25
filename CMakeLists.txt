@@ -64,6 +64,10 @@ set_output_dirs_fn(glfw "libs")
 add_subdirectory("sandbox-core/libs/glm")
 set_configurations_fn(glm)
 
+# SPDLOG
+add_subdirectory("sandbox-core/libs/spdlog")
+set_configurations_fn(spdlog)
+
 add_subdirectory("sandbox")
 add_subdirectory("sandbox-core")
 
