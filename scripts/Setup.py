@@ -15,6 +15,10 @@ else:
 		if (not PythonRequirements.Validate()):
 			raise Exception("PythonException")
 
+		print("\nChecking git submodules...")
+		subprocess.run(["git", "submodule", "update", "--init"], check=True)
+		print("Done")
+
 		if system == "Windows":
 			import inquirer
 		from SetupCMake import CMakeConfiguration as CMakeRequirements
