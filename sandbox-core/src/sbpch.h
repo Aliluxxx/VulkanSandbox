@@ -38,6 +38,13 @@
 #include <cmath>
 #include <inttypes.h>
 
+#ifdef SB_PLATFORM_WINDOWS
+#include <Windows.h>
+#endif
+
+#include <GLFW/glfw3.h>
+#include <vulkan/vulkan.h>
+
 #include "Core/Base/Log.h"
 
 #endif

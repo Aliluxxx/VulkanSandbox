@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Core/Base/Base.h"
+#ifndef SB_PRECOMPILED_HEADER
 #include "Core/Base/Log.h"
+#endif
 #include "Core/Base/Application.h"
 
 extern sb::Application* sb::CreateApplication(ApplicationCommandLineArgs args);
