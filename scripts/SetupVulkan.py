@@ -40,7 +40,7 @@ class VulkanConfiguration:
 
 			print(f"Correct Vulkan SDK located at {vulkanSDK}")
 			return True
-		else:
+		else: # Linux / MacOSX
 			try:
 				output = subprocess.run(["vulkaninfo"], capture_output=True, text=True, check=True)
 				majApiVersion = "0.0.0.0"
@@ -61,10 +61,11 @@ class VulkanConfiguration:
 				print(f"Compatible Vulkan SDK version: {majApiVersion}")
 				return True
 			except FileNotFoundError:
-				print("Vulkan tools not found")
+				print("You don't have the Vulkan SDK installed!")
+				cls.__InstallVulkanSDK()
 				return False
 			except subprocess.CalledProcessError:
-				print("VulkanSDK found, but may be corrupted")
+				print("VulkanSDK found, but may be corrupted. Try to fix the error on your own and rerun the script")
 				return False
 
 	@classmethod

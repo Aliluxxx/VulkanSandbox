@@ -56,8 +56,11 @@ class PythonConfiguration:
 				return False
 			permissionGranted = (reply == 'y' or reply == 'Y')
 		
-		print(f"Installing {packageName.replace("_", "-")} module...")
-		subprocess.check_call(['python', '-m', 'pip', 'install', packageName.replace("_", "-")])
+		print(f"Installing {packageName.replace('_', '-')} module...")
+		if platform.system() == "Windows":
+			subprocess.check_call(['python', '-m', 'pip', 'install', packageName.replace("_", "-")])
+		else:
+			subprocess.check_call(['python3', '-m', 'pip', 'install', packageName.replace("_", "-")])
 
 		return cls.__ValidatePackage(packageName)
 
