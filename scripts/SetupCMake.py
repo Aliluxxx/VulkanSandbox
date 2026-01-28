@@ -92,7 +92,10 @@ class CMakeConfiguration:
 		elif system == "MacOSX":
 			print("Running CMake installer...")
 			subprocess.run(["chmod", "+x", cmakePath])
-			subprocess.run([f"./{cmakePath}"])
+			subprocess.run(["hdiutil", "attach", cmakePath, "-nobrowse", "-quiet"], check=True)
+			subprocess.run(["cp", "-R", "/Volumes/CMake/CMake.app", "/Applications/"], check=True)
+			subprocess.run(["hdiutil", "detach", "/Volumes/CMake", "-quiet"], check=True)
+
 		else:
 			print("Cannot execute the installation automatically")
 			print(f"Execute the installation manually (installer is located at \"{os.path.abspath(cmakeDir)}\")")
