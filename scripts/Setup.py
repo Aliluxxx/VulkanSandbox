@@ -1,19 +1,19 @@
 import os
 import subprocess
+import platform
 
 from SetupPython import PythonConfiguration as PythonRequirements
-import Utils
 
-platform = Utils.GetPlatform()
-if platform == "Unknown":
+if platform.system() not in ["Windows", "Linux", "Darwin"]:
 	print("Platform not supported or unknown")
 else:
-	(system, arch) = platform
-	print(f"Detected platform: {system}-{arch}\n")
 	try:
 		print("Checking Python...")
 		if (not PythonRequirements.Validate()):
 			raise Exception("PythonException")
+
+		import Utils
+		(system, arch) = Utils.GetPlatform()
 
 		print("\nChecking git submodules...")
 		subprocess.run(["git", "submodule", "update", "--init"], check=True)
