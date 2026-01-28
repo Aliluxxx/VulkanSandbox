@@ -55,3 +55,6 @@ vendor/**
 
 # Link
 **.lnk
+
+# macOS
+**/.DS_Store
