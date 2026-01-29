@@ -111,5 +111,3 @@ constexpr Time operator/=(Time left, Time right) {
 
 	return left = left / right;
 }
-
-inline constexpr Time Time::Zero;

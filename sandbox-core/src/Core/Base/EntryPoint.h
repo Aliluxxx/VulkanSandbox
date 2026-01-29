@@ -27,7 +27,7 @@ int main() {
 
 	sb::Log::Init();
 
-	sb::Application app = sb::CreateApplication({ 0, nullptr });
+	sb::Application* app = sb::CreateApplication({ 0, nullptr });
 	app->Run();
 	delete app;
 
