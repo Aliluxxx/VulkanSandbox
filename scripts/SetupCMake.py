@@ -1,6 +1,7 @@
 import os
 import platform
 import subprocess
+import shutil
 
 import Utils
 
@@ -93,8 +94,13 @@ class CMakeConfiguration:
 			print("Running CMake installer...")
 			subprocess.run(["chmod", "+x", cmakePath])
 			subprocess.run(["hdiutil", "attach", cmakePath, "-nobrowse", "-quiet"], check=True)
-			subprocess.run(["cp", "-R", "/Volumes/CMake/CMake.app", "/Applications/"], check=True)
-			subprocess.run(["hdiutil", "detach", "/Volumes/CMake", "-quiet"], check=True)
+			app_path = "/Applications/CMake.app"
+			if os.path.exists(app_path):
+				shutil.rmtree(app_path)
+			subprocess.run(["cp", "-R", f"/Volumes/cmake-{version}-macos10.10-universal/CMake.app", "/Applications/"], check=True)
+			subprocess.run(["hdiutil", "detach", f"/Volumes/cmake-{version}-macos10.10-universal", "-quiet"], check=True)
+			subprocess.run(["sudo", "/Applications/CMake.app/Contents/bin/cmake-gui", "--install"], check=True)
+			print(f"CMake {version} has been installed")
 
 		else:
 			print("Cannot execute the installation automatically")
