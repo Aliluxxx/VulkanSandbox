@@ -65,8 +65,8 @@ class VulkanConfiguration:
 				cls.__InstallVulkanSDK()
 				return False
 			except subprocess.CalledProcessError:
-				print("VulkanSDK found, but may be corrupted. Try to fix the error on your own and rerun the script")
-				return False
+				print("VulkanSDK found, but may be corrupted. Try to fix the error on your own")
+				return True
 
 	@classmethod
 	def CheckVulkanSDKDebugLibs(cls):
